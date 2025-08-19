@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empires Game</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">Empires</h1>
+            <p class="subtitle">The Ultimate Guessing Game</p>
+        </header>
+
+        <main class="main-content">
+            <!-- Setup Screen -->
+            <div id="setup-screen" class="screen active">
+                <div class="setup-card">
+                    <h2>Game Setup</h2>
+                    <div class="form-group">
+                        <label for="fake-entries">Number of Fake Entries: <span id="fake-entries-value">2</span></label>
+                        <input type="range" id="fake-entries" min="1" max="5" value="2" class="slider">
+                    </div>
+                    <div class="form-group">
+                        <label>Player Names (up to 10 players):</label>
+                        <div id="player-name-inputs" class="player-name-inputs">
+                            <div class="player-input-row">
+                                <input type="text" class="player-name-input" placeholder="Player 1 name..." maxlength="30">
+                            </div>
+                            <div class="player-input-row">
+                                <input type="text" class="player-name-input" placeholder="Player 2 name..." maxlength="30">
+                            </div>
+                            <div class="player-input-row">
+                                <input type="text" class="player-name-input" placeholder="Player 3 name..." maxlength="30">
+                            </div>
+                            <div class="player-input-row">
+                                <input type="text" class="player-name-input" placeholder="Player 4 name..." maxlength="30">
+                            </div>
+                            <div class="player-input-row">
+                                <input type="text" class="player-name-input" placeholder="Player 5 name..." maxlength="30">
+                            </div>
+                            <div class="player-input-row">
+                                <input type="text" class="player-name-input" placeholder="Player 6 name..." maxlength="30">
+                            </div>
+                            <div class="player-input-row">
+                                <input type="text" class="player-name-input" placeholder="Player 7 name..." maxlength="30">
+                            </div>
+                            <div class="player-input-row">
+                                <input type="text" class="player-name-input" placeholder="Player 8 name..." maxlength="30">
+                            </div>
+                            <div class="player-input-row">
+                                <input type="text" class="player-name-input" placeholder="Player 9 name..." maxlength="30">
+                            </div>
+                            <div class="player-input-row">
+                                <input type="text" class="player-name-input" placeholder="Player 10 name..." maxlength="30">
+                            </div>
+                        </div>
+                        <p class="instruction">Fill in the names of players who will participate. The number of filled names determines the number of players.</p>
+                    </div>
+                    <button id="start-game" class="btn btn-primary">Start Game</button>
+                </div>
+            </div>
+
+            <!-- Entry Screen (one player at a time) -->
+            <div id="entry-screen" class="screen">
+                <div class="entry-card">
+                    <h2>Player Entry</h2>
+                    <div class="entry-header">
+                        <span class="pill">Category: <strong id="entry-category"></strong></span>
+                        <span class="pill">Current Player: <strong id="entry-player-name"></strong></span>
+                    </div>
+                    <p class="instruction">Only the current player's entry field is shown. Others must not see this entry.</p>
+                    <div class="form-group">
+                        <label for="single-answer">Enter your answer:</label>
+                        <input type="text" id="single-answer" placeholder="Type your answer..." maxlength="50">
+                        <div id="entry-duplicate-warning" class="duplicate-warning" style="display:none;">This answer has already been used. Please choose a different one.</div>
+                    </div>
+                    <div class="entry-actions">
+                        <button id="save-answer" class="btn btn-primary">Save & Next</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game Screen -->
+            <div id="game-screen" class="screen">
+                <div class="game-header">
+                    <h2 id="current-category">Category: <span id="category-text"></span></h2>
+                    <div class="game-info">
+                        <span id="current-player">Player: <span id="player-name"></span></span>
+                        <span id="round-info">Round: <span id="round-number">1</span></span>
+                    </div>
+                </div>
+
+                <div class="game-content">
+                    <!-- Input Phase (unused when entry-screen is active, kept for layout consistency) -->
+                    <div id="input-phase" class="phase">
+                        <div class="input-card">
+                            <h3>Enter Answers</h3>
+                            <p>Category: <strong id="category-display"></strong></p>
+                            <p class="instruction">Ask each player for their answer in real life and enter it below. Other players' entries will be hidden.</p>
+                            <div id="answer-inputs" class="answer-inputs"></div>
+                            <button id="submit-all-answers" class="btn btn-primary">Submit All Answers</button>
+                        </div>
+                    </div>
+
+                    <!-- Reading Phase -->
+                    <div id="reading-phase" class="phase">
+                        <div class="reading-card">
+                            <h3>All Answers</h3>
+                            <div id="answers-list" class="answers-list"></div>
+                            <div class="reading-controls">
+                                <button id="hide-answers" class="btn btn-primary">Hide Answers</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- End Game Phase -->
+                    <div id="end-game-phase" class="phase">
+                        <div class="end-game-card">
+                            <h3>Ready to End the Game?</h3>
+                            <p>Players have asked each other about their answers in person. Now it's time to reveal everything!</p>
+                            <button id="end-game-button" class="btn btn-primary">End Game & Reveal All</button>
+                        </div>
+                    </div>
+
+                    <!-- Guessing Phase -->
+                    <div id="guessing-phase" class="phase">
+                        <div class="guessing-card">
+                            <h3>Guess Who Said What!</h3>
+                            <div id="guessing-grid" class="guessing-grid"></div>
+                            <button id="submit-guesses" class="btn btn-primary">Submit Guesses</button>
+                        </div>
+                    </div>
+
+                    <!-- Results Phase -->
+                    <div id="results-phase" class="phase">
+                        <div class="results-card">
+                            <h3>Round Results</h3>
+                            <div id="results-content" class="results-content"></div>
+                            <div class="results-controls">
+                                <button id="manage-teams" class="btn btn-secondary">Manage Teams</button>
+                                <button id="next-round" class="btn btn-primary">Next Round</button>
+                                <button id="end-game" class="btn btn-secondary">End Game</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Management Screen -->
+            <div id="teams-screen" class="screen">
+                <div class="teams-card">
+                    <h2>Team Management</h2>
+                    <div class="teams-container">
+                        <div id="teams-display" class="teams-display"></div>
+                        <div class="team-controls">
+                            <div class="team-form">
+                                <h3>Move Player to Team</h3>
+                                <div class="form-group">
+                                    <label for="player-select">Player:</label>
+                                    <select id="player-select" class="form-select"></select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="team-select">Team:</label>
+                                    <select id="team-select" class="form-select"></select>
+                                </div>
+                                <button id="move-player" class="btn btn-primary">Move Player</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="teams-actions">
+                        <button id="back-to-game" class="btn btn-secondary">Back to Game</button>
+                        <button id="continue-from-teams" class="btn btn-primary">Continue</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Final Results Screen -->
+            <div id="final-screen" class="screen">
+                <div class="final-card">
+                    <h2>Game Complete!</h2>
+                    <div id="final-scores" class="final-scores"></div>
+                    <button id="play-again" class="btn btn-primary">Play Again</button>
+                </div>
+            </div>
+
+            <!-- Final Reveal Screen -->
+            <div id="reveal-screen" class="screen">
+                <div class="reveal-card">
+                    <h2>All Answers Revealed</h2>
+                    <div id="reveal-content" class="reveal-content"></div>
+                    <div class="reveal-actions">
+                        <button id="play-again-from-reveal" class="btn btn-primary">Play Again</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
