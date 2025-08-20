@@ -126,6 +126,50 @@ body {
     background: #f0fff4;
 }
 
+.player-name-input.auto-filled {
+    border-color: #f39c12;
+    background: #fef9e7;
+    position: relative;
+}
+
+.player-name-input.auto-filled::after {
+    content: "↻";
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #f39c12;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.player-name-input.auto-filled:hover::before {
+    content: "Auto-filled from previous game";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 1000;
+    margin-bottom: 5px;
+}
+
+.player-name-input.auto-filled:hover::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #333;
+    margin-bottom: -5px;
+}
+
 /* Slider Styling */
 .slider {
     width: 100%;

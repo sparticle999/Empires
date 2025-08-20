@@ -48,12 +48,19 @@ class EmpiresGame {
 		this.enteredAnswersLower = new Set();
 		this.roundEntryAnswers = [];
 		
+		// Load saved player names from localStorage
+		this.loadSavedPlayerNames();
+		
+		// Populate player name inputs with saved names if they exist
+		this.populatePlayerNameInputs();
+		
 		this.initializeEventListeners();
 	}
 
 	initializeEventListeners() {
 		// Setup screen
 		document.getElementById('start-game').addEventListener('click', () => this.startGame());
+		document.getElementById('clear-names').addEventListener('click', () => this.clearSavedNames());
 		
 		// Fake entries slider
 		const fakeEntriesSlider = document.getElementById('fake-entries');
@@ -123,8 +130,8 @@ class EmpiresGame {
 			return;
 		}
 		
-		if (playerNames.length > 10) {
-			alert('Maximum 10 players allowed.');
+		if (playerNames.length > 12) {
+			alert('Maximum 12 players allowed.');
 			return;
 		}
 		
@@ -138,6 +145,9 @@ class EmpiresGame {
 		this.fakeEntries = fakeEntries;
 		this.players = [...playerNames];
 		this.playerNames = [...playerNames];
+		
+		// Save player names to localStorage for future games
+		this.savePlayerNames();
 		
 		// Initialize scores
 		this.scores = {};
@@ -733,14 +743,12 @@ class EmpiresGame {
 		this.scores = {};
 		this.teams = [];
 		this.allAnswers = [];
-		this.playerNames = [];
-		this.players = [];
 		
-		// Clear all player name inputs
-		const playerNameInputs = document.querySelectorAll('.player-name-input');
-		playerNameInputs.forEach(input => {
-			input.value = '';
-		});
+		// Restore saved player names instead of clearing them
+		this.loadSavedPlayerNames();
+		
+		// Auto-fill the player name inputs with saved names
+		this.populatePlayerNameInputs();
 		
 		this.showScreen('setup-screen');
 	}
@@ -774,6 +782,63 @@ class EmpiresGame {
 	updateGameInfo() {
 		document.getElementById('category-text').textContent = this.currentCategory;
 		document.getElementById('round-number').textContent = this.currentRound;
+	}
+
+	loadSavedPlayerNames() {
+		const savedPlayerNames = localStorage.getItem('playerNames');
+		if (savedPlayerNames) {
+			this.playerNames = JSON.parse(savedPlayerNames);
+			this.players = [...this.playerNames]; // Ensure players array is updated
+		}
+	}
+
+	savePlayerNames() {
+		localStorage.setItem('playerNames', JSON.stringify(this.playerNames));
+	}
+	
+	populatePlayerNameInputs() {
+		const playerNameInputs = document.querySelectorAll('.player-name-input');
+		
+		// Clear all inputs first
+		playerNameInputs.forEach(input => {
+			input.value = '';
+			input.classList.remove('auto-filled');
+		});
+		
+		// Fill in saved player names
+		if (this.playerNames && this.playerNames.length > 0) {
+			this.playerNames.forEach((name, index) => {
+				if (playerNameInputs[index]) {
+					playerNameInputs[index].value = name;
+					playerNameInputs[index].classList.add('auto-filled');
+				}
+			});
+		}
+		
+		// Add event listeners to remove auto-filled class when user starts typing
+		playerNameInputs.forEach(input => {
+			input.addEventListener('input', () => {
+				input.classList.remove('auto-filled');
+			});
+		});
+	}
+	
+	clearSavedNames() {
+		// Clear from localStorage
+		localStorage.removeItem('playerNames');
+		
+		// Clear from memory
+		this.playerNames = [];
+		this.players = [];
+		
+		// Clear all input fields
+		const playerNameInputs = document.querySelectorAll('.player-name-input');
+		playerNameInputs.forEach(input => {
+			input.value = '';
+		});
+		
+		// Show confirmation
+		alert('Saved player names have been cleared. You can now enter new names.');
 	}
 }
 

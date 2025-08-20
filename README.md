@@ -5,7 +5,7 @@ A modern web-based implementation of the classic "Empires" guessing game with te
 ## How to Play
 
 ### Game Setup
-1. **Number of Players**: Choose between 2-10 players
+1. **Number of Players**: Choose between 2-12 players
 2. **Fake Entries**: Select how many fake answers to add (1-5)
 3. **Start Game**: Players will be automatically assigned as Player 1, Player 2, etc.
 
